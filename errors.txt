@@ -1,0 +1,8 @@
+/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c: In function ‘main’:
+/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:13:17: warning: incompatible implicit declaration of built-in function ‘strcpy’
+                 strcpy(src, "This is tutorialspoint.com");
+                 ^
+/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:13:24: error: ‘src’ undeclared (first use in this function)
+                 strcpy(src, "This is tutorialspoint.com");
+                        ^
+/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:13:24: note: each undeclared identifier is reported only once for each function it appears in
