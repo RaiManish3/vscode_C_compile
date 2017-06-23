@@ -32,11 +32,15 @@ function activate(context) {
         let fn = editor.document.fileName.replace(/\s/g, '\\ ');
         err_dec.dispose();
         warn_dec.dispose();
+        sec_dec.dispose();
         err_dec = vscode.window.createTextEditorDecorationType({
             backgroundColor: 'rgba(200,30,30,0.4)'
         });
         warn_dec = vscode.window.createTextEditorDecorationType({
             backgroundColor: 'rgba(30,200,30,0.4)'
+        });
+        sec_dec = vscode.window.createTextEditorDecorationType({
+            backgroundColor: 'rgba(30,30,200,0.4)'
         });
         let isCFile = c_file.test(fn);
         if (isCFile) {
@@ -62,20 +66,39 @@ function activate(context) {
                         let msg = line_split[4].trim();
                         let dep = line_split[5].indexOf('deprecated');
                         if (msg == "error") {
-                            if (warn_arr.indexOf(pos1) > -1) {
-                                console.log("yes");
-                                warn_dec.dispose();
-                                warn_arr.pop();
-                                editor.setDecorations(warn_dec, warn_arr);
+                            let arr_len = warn_arr.length;
+                            for (let i = 0; i < arr_len; i++) {
+                                if (warn_arr[i].contains(pos1)) {
+                                    //think on dispose
+                                    warn_arr.splice(i, 1);
+                                    arr_len -= 1;
+                                    editor.setDecorations(warn_dec, warn_arr);
+                                }
                             }
                             err_arr.push(pos1);
                             editor.setDecorations(err_dec, err_arr);
                         }
                         else if (msg == "warning" && dep <= -1) {
+                            let arr_len = sec_arr.length;
                             warn_arr.push(pos1);
+                            for (let i = 0; i < arr_len; i++) {
+                                if (sec_arr[i].contains(pos1)) {
+                                    warn_arr.pop();
+                                    break;
+                                }
+                            }
                             editor.setDecorations(warn_dec, warn_arr);
                         }
                         else if (dep > -1) {
+                            let arr_len = warn_arr.length;
+                            for (let i = 0; i < arr_len; i++) {
+                                if (warn_arr[i].contains(pos1)) {
+                                    //think on dispose
+                                    warn_arr.splice(i, 1);
+                                    arr_len -= 1;
+                                    editor.setDecorations(warn_dec, warn_arr);
+                                }
+                            }
                             sec_arr.push(pos1);
                             editor.setDecorations(sec_dec, sec_arr);
                         }
