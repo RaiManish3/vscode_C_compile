@@ -29,10 +29,12 @@ function activate(context) {
     // The commandId parameter must match the command field in package.json
     let disposable = vscode.commands.registerCommand('extension.compileInfo', () => {
         let editor = vscode.window.activeTextEditor;
+        //escape filename in case it contains space
         let fn = editor.document.fileName.replace(/\s/g, '\\ ');
         err_dec.dispose();
         warn_dec.dispose();
         sec_dec.dispose();
+        // definitions for all decorations
         err_dec = vscode.window.createTextEditorDecorationType({
             backgroundColor: 'rgba(200,30,30,0.4)'
         });
@@ -42,11 +44,13 @@ function activate(context) {
         sec_dec = vscode.window.createTextEditorDecorationType({
             backgroundColor: 'rgba(30,30,200,0.4)'
         });
+        //test whether we are dealing with C file
         let isCFile = c_file.test(fn);
         if (isCFile) {
             // object for the C file currently edited
             let this_file = editor.document;
-            let tLines = this_file.lineCount; // total no.of lines
+            let tLines = this_file.lineCount; // total no.of lines in the currently opened file
+            // shell execute base command for gcc "no extra parameters given"
             sh.exec("gcc " + fn + " > " + err_file + " 2>&1");
             let lineReader = require('readline').createInterface({
                 input: require('fs').createReadStream(err_file)
@@ -55,6 +59,12 @@ function activate(context) {
             let warn_arr = [];
             let sec_arr = [];
             lineReader.on('line', function (line) {
+                // look out for the following pattern 
+                // line_split 1 has filename
+                //            2 has line no
+                //            3 has column no
+                //            4 has reason
+                //            5 has extra info
                 let line_split = line.match('^([^:]*):([^:]*):([^:]*):([^:]*):([^:]*)');
                 if (line_split != null && line_split.length == 6) {
                     let this_line = parseInt(line_split[2]) - 1;
