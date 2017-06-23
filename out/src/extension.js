@@ -42,6 +42,7 @@ function activate(context) {
         if (isCFile) {
             // object for the C file currently edited
             let this_file = editor.document;
+            let tLines = this_file.lineCount; // total no.of lines
             sh.exec("gcc " + fn + " > " + err_file + " 2>&1");
             let lineReader = require('readline').createInterface({
                 input: require('fs').createReadStream(err_file)
@@ -50,31 +51,34 @@ function activate(context) {
             let warn_arr = [];
             let sec_arr = [];
             lineReader.on('line', function (line) {
-                let line_split = line.match('^([^:]*):([^:]*):([^:]*):([^:]*)');
-                if (line_split != null) {
-                    let linex = this_file.lineAt(parseInt(line_split[2]) - 1);
-                    let non_white = linex.firstNonWhitespaceCharacterIndex;
-                    let end_pos = linex.text.length;
-                    let pos1 = new vscode.Range(parseInt(line_split[2]) - 1, non_white, parseInt(line_split[2]) - 1, end_pos);
-                    let msg = line_split[4].trim();
-                    console.log(pos1[0]);
-                    if (msg == "error") {
-                        if (warn_arr.indexOf(pos1) > -1) {
-                            console.log("yes");
-                            warn_dec.dispose();
-                            warn_arr.pop();
+                let line_split = line.match('^([^:]*):([^:]*):([^:]*):([^:]*):([^:]*)');
+                if (line_split != null && line_split.length == 6) {
+                    let this_line = parseInt(line_split[2]) - 1;
+                    if (this_line <= tLines) {
+                        let linex = this_file.lineAt(parseInt(line_split[2]) - 1);
+                        let non_white = linex.firstNonWhitespaceCharacterIndex;
+                        let end_pos = linex.text.length;
+                        let pos1 = new vscode.Range(this_line, non_white, this_line, end_pos);
+                        let msg = line_split[4].trim();
+                        let dep = line_split[5].indexOf('deprecated');
+                        if (msg == "error") {
+                            if (warn_arr.indexOf(pos1) > -1) {
+                                console.log("yes");
+                                warn_dec.dispose();
+                                warn_arr.pop();
+                                editor.setDecorations(warn_dec, warn_arr);
+                            }
+                            err_arr.push(pos1);
+                            editor.setDecorations(err_dec, err_arr);
+                        }
+                        else if (msg == "warning" && dep <= -1) {
+                            warn_arr.push(pos1);
                             editor.setDecorations(warn_dec, warn_arr);
                         }
-                        err_arr.push(pos1);
-                        editor.setDecorations(err_dec, err_arr);
-                    }
-                    else if (msg == "warning") {
-                        warn_arr.push(pos1);
-                        editor.setDecorations(warn_dec, warn_arr);
-                    }
-                    else if (msg == "some_security_norm_here") {
-                        sec_arr.push(pos1);
-                        editor.setDecorations(sec_dec, sec_arr);
+                        else if (dep > -1) {
+                            sec_arr.push(pos1);
+                            editor.setDecorations(sec_dec, sec_arr);
+                        }
                     }
                 }
             });

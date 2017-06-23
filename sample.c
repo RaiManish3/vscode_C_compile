@@ -7,6 +7,7 @@ int main()
 
           int n;
           scanf("%d",&n);
+          gets(n);
             
           char dest[n];
              //memset(dest, '\0', sizeof(dest));
