@@ -1,18 +1,10 @@
 /media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c: In function ‘main’:
-/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:10:11: warning: ‘gets’ is deprecated (declared at /usr/include/stdio.h:638) [-Wdeprecated-declarations]
-           gets(n);
-           ^
-/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:10:16: warning: passing argument 1 of ‘gets’ makes pointer from integer without a cast
-           gets(n);
-                ^
-In file included from /media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:1:0:
-/usr/include/stdio.h:638:14: note: expected ‘char *’ but argument is of type ‘int’
- extern char *gets (char *__s) __wur __attribute_deprecated__;
-              ^
-/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:14:17: warning: incompatible implicit declaration of built-in function ‘strcpy’
-                 strcpy(src, "This is tutorialspoint.com");
-                 ^
-/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:14:24: error: ‘src’ undeclared (first use in this function)
-                 strcpy(src, "This is tutorialspoint.com");
-                        ^
-/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:14:24: note: each undeclared identifier is reported only once for each function it appears in
+/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:7:3: warning: implicit declaration of function ‘strcpy’ [-Wimplicit-function-declaration]
+   strcpy(b,a);
+   ^
+/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:7:3: warning: incompatible implicit declaration of built-in function ‘strcpy’
+/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:9:3: warning: ‘gets’ is deprecated (declared at /usr/include/stdio.h:638) [-Wdeprecated-declarations]
+   gets(&c);
+   ^
+/tmp/ccTVxDsS.o: In function `main':
+sample.c:(.text+0x42): warning: the `gets' function is dangerous and should not be used.

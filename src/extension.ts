@@ -59,7 +59,7 @@ export function activate(context: vscode.ExtensionContext) {
             let this_file = editor.document
             let tLines = this_file.lineCount  // total no.of lines in the currently opened file
             // shell execute base command for gcc "no extra parameters given"
-            sh.exec("gcc "+fn+" > "+err_file+" 2>&1");
+            sh.exec("gcc -Wall "+fn+" > "+err_file+" 2>&1");
             
             let lineReader = require('readline').createInterface({
                 input: require('fs').createReadStream(err_file)
@@ -86,30 +86,98 @@ export function activate(context: vscode.ExtensionContext) {
                         let pos1 = new vscode.Range(this_line,non_white,this_line,end_pos)
                         let msg = line_split[4].trim();
                         let dep = line_split[5].indexOf('deprecated')
+
                         if(msg=="error"){
-                            let arr_len = warn_arr.length;
-                            for(let i=0;i<arr_len;i++){
+                            //warn decorations at the same line should be removed
+                            let arr_len1 = warn_arr.length;
+                            for(let i=0;i<arr_len1;i++){
                                 if(warn_arr[i].contains(pos1)){
                                     //think on dispose
                                     warn_arr.splice(i,1);
-                                    arr_len-=1;
+                                    arr_len1-=1;
                                     editor.setDecorations(warn_dec, warn_arr);
                                 }
                             }
-                            err_arr.push(pos1)
-                            editor.setDecorations(err_dec, err_arr)
-                        }
-                        else if(msg=="warning" && dep<=-1){
-                            let arr_len = sec_arr.length;
-                            warn_arr.push(pos1)
-                            for(let i=0;i<arr_len;i++){
+                            //also do the same for security warnings
+                            let arr_len2 = sec_arr.length;
+                            for(let i=0;i<arr_len2;i++){
                                 if(sec_arr[i].contains(pos1)){
-                                    warn_arr.pop()
-                                    break;
+                                    //think on dispose
+                                    sec_arr.splice(i,1);
+                                    arr_len2-=1;
+                                    editor.setDecorations(sec_dec, sec_arr);
                                 }
                             }
-                            editor.setDecorations(warn_dec, warn_arr)
+                            // also dont repeat same decor... over and over again
+                            let arr_len3 = err_arr.length;
+                            if(arr_len3>0){
+                                for(let i=0;i<arr_len3;i++){
+                                    if(err_arr[i].contains(pos1)){
+                                        break;
+                                    }
+                                    else if(i==arr_len3-1){
+                                        err_arr.push(pos1)
+                                        editor.setDecorations(err_dec, err_arr)
+                                    }
+                                }
+                            }
+                            else{
+                                err_arr.push(pos1)
+                                editor.setDecorations(err_dec, err_arr)
+                            }
                         }
+
+                        else if(msg=="warning" && dep<=-1){
+                            let arr_len = sec_arr.length;
+                            if(arr_len>0){
+                                for(let i=0;i<arr_len;i++){
+                                    if(sec_arr[i].contains(pos1)){
+                                        break;
+                                    }
+                                    else if(i==arr_len-1){
+                                        // also dont repeat same decor... over and over again
+                                        let arr_len3 = warn_arr.length;
+                                        if(arr_len3>0){
+                                            for(let i=0;i<arr_len3;i++){
+                                                if(warn_arr[i].contains(pos1)){
+                                                    break;
+                                                }
+                                                if(i==arr_len3-1){
+                                                    warn_arr.push(pos1)
+                                                    editor.setDecorations(warn_dec, warn_arr)
+                                                }
+                                            }
+                                        }
+                                        else{
+                                            warn_arr.push(pos1)
+                                            editor.setDecorations(warn_dec, warn_arr)
+                                        }
+                                    }
+                                }
+                            }
+                        else{
+                            // also dont repeat same decor... over and over again
+                            let arr_len3 = warn_arr.length;
+                            if(arr_len3>0){
+                                for(let i=0;i<arr_len3;i++){
+                                    if(warn_arr[i].contains(pos1)){
+                                        break;
+                                    }
+                                    if(i==arr_len3-1){
+                                        warn_arr.push(pos1)
+                                        editor.setDecorations(warn_dec, warn_arr)
+                                    }
+                                }
+                            }
+                            else{
+                                warn_arr.push(pos1)
+                                editor.setDecorations(warn_dec, warn_arr)
+                            }
+                        }
+                            
+                        }
+
+                        //for security warnings ----------------
                         else if(dep>-1){
                             let arr_len = warn_arr.length;
                             for(let i=0;i<arr_len;i++){
