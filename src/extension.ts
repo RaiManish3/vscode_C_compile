@@ -12,8 +12,9 @@ export function activate(context: vscode.ExtensionContext) {
     let fs = require('fs')
 
     //globals
+    let initials = process.env['HOME'];
     let c_file = new RegExp('.*\.c$');
-    let err_file = "errors.txt"
+    let err_file = initials+"/.vscode/extensions/compileinfo/error_files/errors.txt"
     let sec_err_code = ["-Wformat-security","-Warray-bounds","-Wconversion","-Wsizeof-pointer-memaccess","-Waddress","deprecated","overflow"]
 
 
@@ -147,10 +148,9 @@ export function activate(context: vscode.ExtensionContext) {
     // Now provide the implementation of the command with  registerCommand
     // The commandId parameter must match the command field in package.json
     let disposable = vscode.commands.registerCommand('extension.compileInfo', () => {
-
         let editor = vscode.window.activeTextEditor;
-        //escape filename in case it contains space
         let fni = editor.document.fileName
+        //escape filename in case it contains space
         let fn = fni.replace(/\s/g,'\\ ');
         err_dec.dispose()
         warn_dec.dispose()
