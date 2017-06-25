@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
     //globals
     let initials = process.env['HOME'];
     let c_file = new RegExp('.*\.c$');
-    let err_file = initials+"/.vscode/extensions/compileinfo/error_files/errors.txt"
+    let err_file = initials+"/.vscode/extensions/vscode_C_compile/error_files/errors.txt"
     let sec_err_code = ["-Wformat-security","-Warray-bounds","-Wconversion","-Wsizeof-pointer-memaccess","-Waddress","deprecated","overflow"]
 
 
