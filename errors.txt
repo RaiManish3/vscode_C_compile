@@ -1,10 +1,11 @@
 /media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c: In function ‘main’:
-/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:7:3: warning: implicit declaration of function ‘strcpy’ [-Wimplicit-function-declaration]
-   strcpy(b,a);
+/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:10:4: warning: array subscript is above array bounds [-Warray-bounds]
+   b[5]='a';
+    ^
+In file included from /usr/include/string.h:639:0,
+                 from /media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:2:
+In function ‘strcpy’,
+    inlined from ‘main’ at /media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:7:3:
+/usr/include/i386-linux-gnu/bits/string3.h:110:3: warning: call to __builtin___memcpy_chk will always overflow destination buffer
+   return __builtin___strcpy_chk (__dest, __src, __bos (__dest));
    ^
-/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:7:3: warning: incompatible implicit declaration of built-in function ‘strcpy’
-/media/raimanish/Local Disk/vscode_workspace/compileinfo/sample.c:9:3: warning: ‘gets’ is deprecated (declared at /usr/include/stdio.h:638) [-Wdeprecated-declarations]
-   gets(&c);
-   ^
-/tmp/ccTVxDsS.o: In function `main':
-sample.c:(.text+0x42): warning: the `gets' function is dangerous and should not be used.

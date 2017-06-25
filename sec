@@ -1,0 +1,5 @@
+-Wformat-security
+-Wstrict-overflow
+-Warray-bounds        // use -O3
+-Wconversion
+-Wsizeof-pointer-memaccess // enabled by Wall
