@@ -4,7 +4,7 @@ This is a vscode plugin which highlights line in the code with gcc errors (red) 
 Highlights the results with just a click of a button.
 
 ## Requirements
-Though the installation does require you to intall anything explicity but I thought they are worth mentioning.
+Though it is not required to install anything explicity but I thought they are worth mentioning.
 - [shelljs](https://www.npmjs.com/package/shelljs)
 
 
